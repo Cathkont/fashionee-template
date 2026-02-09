@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext.js"
+
 import "./header.css";
 
 import logo from "../../assets/icons/logo.svg";
@@ -22,6 +25,7 @@ const getFavoritesCount = () => {
 const Header = ({ onShop, onCart }) => {
   const [cartCount, setCartCount] = useState(0);
   const [favCount, setFavCount] = useState(0);
+  const { isLoggedIn, login } = useContext(AuthContext);
 
   useEffect(() => {
     const updateCounts = () => {
@@ -65,7 +69,6 @@ const Header = ({ onShop, onCart }) => {
             <img src={arrowPink} alt="" className="arrow-hover" />
           </div>
 
-          {/* Shop — выглядит как Pages, но кликабельный */}
           <div
             data-testid="shop-btn"
             className="menu-item"
@@ -91,8 +94,12 @@ const Header = ({ onShop, onCart }) => {
           <img src={search} alt="" />
         </div>
 
-        <div className="header-icon">
-          <img src={profile} alt="" />
+        <div
+          className="header-icon"
+          onClick={!isLoggedIn ? login : undefined}
+          style={{ cursor: !isLoggedIn ? "pointer" : "default" }}
+        >
+          <img src={profile} alt="profile" />
         </div>
 
         {/* Favorites */}

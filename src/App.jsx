@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "./context/AuthContext.js"
 import Header from "./components/Header/Header.jsx";
 import ContentBlock from "./components/ContentBlock/ContentBlock.jsx";
 import Showcase from "./pages/Showcase.jsx"
@@ -7,6 +8,7 @@ import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [page, setPage] = useState("shop");
+  const { isLoggedIn } = useContext(AuthContext);
 
   return (
     <>
@@ -14,6 +16,8 @@ function App() {
         onShop={() => setPage("shop")}
         onCart={() => setPage("cart")}
       />
+
+      {isLoggedIn && <h2>Вы авторизованы!</h2>}
 
       {page === "shop" && (
         <>

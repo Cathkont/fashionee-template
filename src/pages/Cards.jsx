@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import heart from "../assets/icons/heart.svg";
 import heartRed from "../assets/icons/heart-red.svg";
-import "../components/ContentBlock/shop.css"
-
+import "../components/ContentBlock/shop.css";
 
 const getFavorites = () =>
   JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -10,7 +9,7 @@ const getFavorites = () =>
 const getCart = () =>
   JSON.parse(localStorage.getItem("cart") || "[]");
 
-/*Cards*/
+/* Cards */
 const Cards = ({ products }) => {
   return (
     <div className="products">
@@ -23,7 +22,7 @@ const Cards = ({ products }) => {
 
 export default Cards;
 
-/*Products*/
+/* Product Card */
 const ProductCard = ({ product }) => {
   const { id, name, price, oldPrice, image, isSale, isNew } = product;
 
@@ -33,7 +32,20 @@ const ProductCard = ({ product }) => {
   const isFavorite = favorites.includes(id);
   const quantity = cart.find(item => item.id === id)?.quantity || 0;
 
-  /*Favs*/
+  /* --- Нормализация цветов и категорий --- */
+  const normalizedColor = (() => {
+    if (!product.color) return ""; // если цвета нет
+    if (Array.isArray(product.color)) {
+      return product.color.map(c => c.trim().toLowerCase()).join(",");
+    }
+    return product.color.trim().toLowerCase();
+  })();
+
+  const normalizedCategories = (product.categories || [])
+    .map(c => c.trim().toLowerCase())
+    .join(",");
+
+  /* --- Favorites --- */
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
     window.dispatchEvent(new Event("storage"));
@@ -47,7 +59,7 @@ const ProductCard = ({ product }) => {
     );
   };
 
-  /*Cart*/
+  /* --- Cart --- */
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
     window.dispatchEvent(new Event("storage"));
@@ -76,37 +88,18 @@ const ProductCard = ({ product }) => {
       className="product"
       data-testid="product-card"
       data-product-id={id}
+      data-price={price}
+      data-color={normalizedColor}
+      data-categories={normalizedCategories}
     >
-      {/* <div className="photo">
-        <img src={image} alt={name} />
-        <div className="top-bar">
-          <div className="labels">
-            {isSale && <span className="label-sale">Sale</span>}
-            {isNew && <span className="label-new">New</span>}
-          </div> */}
-
-          {/*Favs*/}
-          {/* <div
-            className="favorites"
-            data-testid="favorite-btn"
-            data-active={isFavorite}
-            onClick={toggleFavorite}
-          >
-            <img src={isFavorite ? heartRed : heart} alt="heart" />
-          </div>
-        </div>
-      </div> */}
-
+      {/* Фото */}
       <div className="photo">
         <img src={image} alt={name} />
-
-        {/* top row */}
         <div className="card-top">
           <div className="labels">
             {isSale && <span className="label sale">Sale</span>}
             {isNew && <span className="label new">New</span>}
           </div>
-
           <button
             className="fav-btn"
             data-testid="favorite-btn"
@@ -118,8 +111,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-
-
+      {/* Информация */}
       <div className="info">
         <div className="name">{name}</div>
         <div className="price">
@@ -128,7 +120,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-      {/*Cart*/}
+      {/* Cart */}
       <div className="product-actions">
         {quantity === 0 ? (
           <button
@@ -147,13 +139,9 @@ const ProductCard = ({ product }) => {
             >
               −
             </button>
-
-            <div 
-            className="count"
-            data-testid="product-quantity">
+            <div className="count" data-testid="product-quantity">
               {quantity}
             </div>
-
             <button
               className="count-button"
               data-testid="increase-qty-btn"
@@ -164,43 +152,6 @@ const ProductCard = ({ product }) => {
           </div>
         )}
       </div>
-      {/* <div className="buy-product">
-        {quantity === 0 ? (
-          <button
-            data-testid="add-to-cart-btn"
-            className="buy-button"
-            onClick={() => updateCart(1)}
-          >
-            Buy
-          </button>
-        ) : (
-          <div className="quantity">
-            <button
-              data-testid="decrease-qty-btn"
-              className="count-button"
-              onClick={() => updateCart(quantity - 1)}
-            >
-              -
-            </button>
-
-            <div
-              className="count"
-              data-testid="product-quantity"
-            >
-              {quantity}
-            </div>
-
-            <button 
-              className="count-button"
-              data-testid="increase-qty-btn"
-              onClick={() => updateCart(quantity + 1)}
-            >
-              +
-            </button>
-          </div>
-        )}
-      </div> */}
-
     </div>
   );
 };

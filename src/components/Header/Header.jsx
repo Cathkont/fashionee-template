@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext"
+import { AuthContext } from "../../context/AuthContext.js"
 
 import "./header.css";
 

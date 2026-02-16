@@ -71,17 +71,34 @@ footer .footer-info .column.column4 .newsletter-text {
     line-height: 24px;
 }
 
-footer .footer-info .column.column4 .newsletter-form {
+/* footer .footer-info .column.column4 .newsletter-form {
     position: relative;
+} */
+footer .footer-info .column.column4 .newsletter-form form {
+    width: 100%;
 }
 
 footer .footer-info .column.column4 .newsletter-form .input { 
-    padding-right: 30px;
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    box-sizing: border-box;
 }
 
-footer .footer-info .column.column4 .newsletter-form .send-icon {
+footer .footer-info .column.column4 .newsletter-form label {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+
+footer .footer-info .column.column4 .newsletter-form [alt="send"] {
     position: absolute;
-    right: 0;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
 }
 
 footer .footer-info .column .logo {

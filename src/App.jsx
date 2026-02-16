@@ -3,7 +3,7 @@ import { AuthContext } from "./context/AuthContext.js"
 import Header from "./components/Header/Header.jsx";
 import ContentBlock from "./components/ContentBlock/ContentBlock.jsx";
 import Showcase from "./pages/Showcase.jsx"
-import Cart from "./pages/Cart.jsx"
+import Cart from "./components/Cart/Cart.jsx"
 import Footer from "./components/Footer/Footer.jsx";
 
 function App() {

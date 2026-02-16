@@ -31,8 +31,7 @@ const Showcase = () => {
   
   const [sortBy, setSortBy] = useState("relevance");
   const [isSortOpen, setIsSortOpen] = useState(false);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [page, setPage] = useState(1);
+
 
 
 
@@ -47,42 +46,17 @@ const Showcase = () => {
       }));
   
     setProducts(withIndex);
-    // setProducts(productsData.products);
     setPriceBounds({
         min: Math.min(...prices),
         max: Math.max(...prices),
     })
-
-//     setProducts(productsData.products);
-//     setPriceBounds({ min, max });
-//   }, []);
-
-    // setProducts(productsData.products.map((p, index) => ({
-    //     ...p,
-    //     __index: index,
-    // })));
     }, []);
 
   /* ---------- sidebar options ---------- */
-//   const categories =
-//     products.length > 0
-//       ? ["All", ...Array.from(new Set(products.flatMap((p) => p.categories)))]
-//       : ["All"];
 const categories = products.length
 ? ["All", ...Array.from(new Set(products.flatMap(p => p.categories)))]
 : ["All"];
 
-//   const colors =
-//     products.length > 0
-//       ? Array.from(
-//           new Set(
-//             products
-//               .map((p) => p.color)
-//               .filter(Boolean)
-//               .map((c) => c.trim().toLowerCase())
-//           )
-//         )
-//       : [];
 const colors = products.length
 ? Array.from(
     new Set(
@@ -98,17 +72,6 @@ const colors = products.length
   const maxPrice = priceBounds.max;
 
   /* ---------- filtering (FIXED PRICE LOGIC) ---------- */
-//   const filteredProducts = useMemo(() => {
-//     return products.filter((product) => {
-//       /* category */
-//       if (
-//         filters.category !== "all" &&
-//         !product.categories
-//           .map((c) => c.toLowerCase())
-//           .includes(filters.category)
-//       ) {
-//         return false;
-//       }
     const filteredProducts = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -123,58 +86,6 @@ const colors = products.length
             return false;
         }
 
-    //   /* colors */
-    //   if (
-    //     filters.colors.length > 0 &&
-    //     !filters.colors.includes(product.color?.toLowerCase())
-    //   ) {
-    //     return false;
-    //   }
-
-      /**
-       * PRICE MIN
-       * фильтр применяется ТОЛЬКО если:
-       * - значение задано
-       * - и оно отличается от дефолтного min
-       */
-    //   if (
-    //     typeof filters.priceMin === "number" &&
-    //     filters.priceMin !== minPrice &&
-    //     product.price < filters.priceMin
-    //   ) {
-    //     return false;
-    //   }
-
-      /**
-       * PRICE MAX
-       * аналогично min
-       */
-    //   if (
-    //     typeof filters.priceMax === "number" &&
-    //     filters.priceMax !== maxPrice &&
-    //     product.price > filters.priceMax
-    //   ) {
-    //     return false;
-    //   }
-
-      /* search */
-    //   if (
-    //     searchQuery &&
-    //     !product.title.toLowerCase().includes(searchQuery.toLowerCase())
-    //   ) {
-    //     return false;
-    //   }
-    // if (searchQuery) {
-    //     const q = searchQuery.toLowerCase();
-      
-    //     const inTitle = product.title?.toLowerCase().includes(q);
-    //     const inDescription = product.description?.toLowerCase().includes(q);
-      
-    //     if (!inTitle && !inDescription) {
-    //       return false;
-    //     }
-    // }
-    /* colors */
             if (
                 filters.colors.length > 0 &&
                 !filters.colors.includes(product.color?.toLowerCase())
@@ -220,52 +131,46 @@ const colors = products.length
             });
   }, [products, filters, searchQuery, minPrice, maxPrice]);
 
-//   const sortedProducts = useMemo(() => {
+
+// const sortedProducts = useMemo(() => {
 //     const list = [...filteredProducts];
   
-//     switch (sortBy) {
-//       case "alphabet-asc":
-//         list.sort((a, b) =>
-//           (a.name || "").localeCompare(b.name || "")
-//         );
-//         break;
-  
-//       case "alphabet-desc":
-//         list.sort((a, b) =>
-//           (b.name || "").localeCompare(a.name || "")
-//         );
-//         break;
-  
-//       case "price-asc":
-//         list.sort((a, b) => a.price - b.price);
-//         break;
-  
-//       case "price-desc":
-//         list.sort((a, b) => b.price - a.price);
-//         break;
-  
-//       case "relevance":
-//       default:
-//         // исходный порядок
-//         break;
+//     if (sortBy === "alphabet") {
+//       list.sort((a, b) =>
+//         (a.name || "").localeCompare(b.name || "")
+//       );
 //     }
+  
+//     if (sortBy === "price") {
+//       list.sort((a, b) => a.price - b.price);
+//     }
+  
+//     // relevance → дефолтный порядок
+//     return list;
+//   }, [filteredProducts, sortBy]);
 
 const sortedProducts = useMemo(() => {
     const list = [...filteredProducts];
   
-    if (sortBy === "alphabet") {
-      list.sort((a, b) =>
-        (a.name || "").localeCompare(b.name || "")
-      );
+    switch (sortBy) {
+      case "alphabet":
+        list.sort((a, b) =>
+          (a.name || "").localeCompare(b.name || "")
+        );
+        break;
+  
+      case "price":
+        list.sort((a, b) => a.price - b.price);
+        break;
+  
+      case "relevance":
+      default:
+        list.sort((a, b) => a.__index - b.__index);
+        break;
     }
   
-    if (sortBy === "price") {
-      list.sort((a, b) => a.price - b.price);
-    }
-  
-    // relevance → дефолтный порядок
     return list;
-  }, [filteredProducts, sortBy]);
+  }, [filteredProducts, sortBy]);  
 
   
 
@@ -285,12 +190,11 @@ const sortedProducts = useMemo(() => {
   }, [filters, searchQuery, sortBy]);
 
   useEffect(() => {
-    if (page > totalPages) {
-      setPage(1);
+    if (page > totalPages && totalPages > 0) {
+      setPage(totalPages);
     }
-  }, [totalPages]);
-
-
+  }, [page, totalPages]);
+  
 
   /* ---------- render ---------- */
   return (
@@ -309,29 +213,7 @@ const sortedProducts = useMemo(() => {
           products in this category.
         </div>
 
-            {/* ---------- SORT ---------- */}
-
-{/* <div className="shop-sort">
-  <select
-    className="input"
-    data-testid="sort-selector"   // ← ВОТ ЭТО ОБЯЗАТЕЛЬНО
-    value={sortBy}
-    onChange={(e) => setSortBy(e.target.value)}
-  >
-    <option value="relevance" data-testid="sort-by-relevance">
-      by relevance
-    </option>
-
-    <option value="alphabet" data-testid="sort-by-alphabet">
-      by alphabet
-    </option>
-
-    <option value="price" data-testid="sort-by-price">
-      by price
-    </option>
-  </select>
-</div> */}
-
+{/* ---------- SORT ---------- */}
 <div className="shop-sort">
           <button
             data-testid="sort-selector"
@@ -376,38 +258,7 @@ const sortedProducts = useMemo(() => {
           )}
 </div>
 
-
-
-{/* <div className="shop-sort">
-  <select
-    className="input"
-    value={sortBy}
-    onChange={(e) => setSortBy(e.target.value)}
-  >
-    <option value="relevance" data-testid="sort-by-relevance">
-      by relevance
-    </option>
-
-    <option value="alphabet-asc" data-testid="sort-by-alphabet-asc">
-      alphabet (A → Z)
-    </option>
-
-    <option value="alphabet-desc" data-testid="sort-by-alphabet-desc">
-      alphabet (Z → A)
-    </option>
-
-    <option value="price-asc" data-testid="sort-by-price-asc">
-      price (low → high)
-    </option>
-
-    <option value="price-desc" data-testid="sort-by-price-desc">
-      price (high → low)
-    </option>
-  </select>
-</div> */}
-
     </div>
-
 
 
       <div className="shop-layout">
@@ -456,21 +307,6 @@ const sortedProducts = useMemo(() => {
         </div>
       )}
 
-      {/* <div className="pagination">
-        <div className="button-left">
-          <img src={leftArrow} alt="" />
-        </div>
-
-        <div className="pages">
-          <div className="page active">1</div>
-          <div className="page">2</div>
-          <div className="page">3</div>
-        </div>
-
-        <div className="button-right">
-          <img src={rightArrow} alt="" />
-        </div>
-      </div> */}
     </section>
   );
 };
